@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  backend:
+    build: .  # Ruta a tu Dockerfile del backend
+    container_name: backend
+    volumes:
+      - ./:/app
+      - /app/node_modules
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - NODE_ENV=development
+    command: npm run dev
+    ports:
+      - "3000:3000"
+    networks:
+      - minecraft-net
+
+  minecraft-server:
+    build: ./minecraft-server
+    container_name: minecraft-server
+    ports:
+      - "25565:25565"
+    # environment:
+    #   EULA: "TRUE"
+    #   VERSION: "1.20.1"
+    #   MEMORY: "2G"
+    volumes:
+      - ./minecraft-data:/data
+    networks:
+      - minecraft-net
+    # restart: unless-stopped
+
+networks:
+  minecraft-net:
